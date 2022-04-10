@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: A Project Practice
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+    - t1.micro
+    - t2.micro
+    Description: Select instance type
+    ConstraintDescription: Must be valid instance type
+  # KeyName:
+    # Type: AWS::EC2::KeyPair::KeyName
+    # Description: Select Key Name
+    # Default: mss-deploy
+    # ConstraintDescription: Must be valid Key Name
+
+
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0b0af3577fe5e3532
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+       - !Ref EC2SecurityGroup
+      # KeyName: !Ref KeyName
+  
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: testsecuritygroup
+      GroupDescription: Secuity group for HTTP/S and SSH
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+
+# Outputs:
+#   WebsiteURL:
+#     Value: !GetAtt
+#       - S3Bucket
+#       - WebsiteURL
+#     Description: Url for S3 Bucket
