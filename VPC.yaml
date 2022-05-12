@@ -95,6 +95,7 @@ Resources:
     # Attach Internet Gateway to VPC      
   InternetGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn: VPC
     Properties:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
@@ -275,30 +276,40 @@ Resources:
           Value: DataBase Security Group
       VpcId: !Ref VPC
   
-  MyEC2Instance: 
-    Type: AWS::EC2::Instance
-    Properties:
-      SubnetId: !Ref PublicSubnet2
-      ImageId: ami-0ba898a398d39054a
-      InstanceType: t2.micro
-      KeyName: "autosc-demo"
-      SecurityGroupIds: 
-        - !Ref WebServerSecurityGroup
-      Tags:
-        - Key: Name
-          Value: Demo EC2
-      BlockDeviceMappings: 
-      - DeviceName: "/dev/sdm"
-        Ebs: 
-          VolumeType: "io1"
-          Iops: "200"
-          DeleteOnTermination: "false"
-          VolumeSize: "20"
-      - DeviceName: "/dev/sdk"
-        NoDevice: {}
+  # EC2Instance1: 
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     SubnetId: !Ref PublicSubnet1
+  #     ImageId: ami-06b2be46cc04e773d
+  #     InstanceType: t2.micro
+  #     KeyName: "mss-deploy"
+  #     SecurityGroupIds: 
+  #       - !Ref WebServerSecurityGroup
+  #     Tags:
+  #       - Key: Name
+  #         Value: Demo EC2
+
+  # EC2Instance2: 
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     SubnetId: !Ref PublicSubnet2
+  #     ImageId: ami-06b2be46cc04e773d
+  #     InstanceType: t2.micro
+  #     KeyName: "mss-deploy"
+  #     SecurityGroupIds: 
+  #       - !Ref WebServerSecurityGroup
+  #     Tags:
+  #       - Key: Name
+  #         Value: Demo EC2
+  
+  MyLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      Subnets:
+        - Ref: PublicSubnet1
+        - Ref: PublicSubnet2
         
 Outputs:
-
   VPC:
     Description: VPC ID
     Export:
