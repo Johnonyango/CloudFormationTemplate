@@ -142,7 +142,7 @@ Resources:
     Type: 'AWS::AutoScaling::ScalingPolicy'
     Properties:
       AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref WebServerAutoScalingGroup
+      AutoScalingGrpName: !Ref WebServerAutoScalingGroup
       Cooldown: 60
       ScalingAdjustment: -1
 
